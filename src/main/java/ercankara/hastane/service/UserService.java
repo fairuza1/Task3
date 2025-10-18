@@ -23,7 +23,7 @@ public class UserService {
     @Autowired
     private JwtUtil jwtUtil;
 
-    // Login metodu
+    // ✅ Kullanıcı giriş işlemi
     public LoginResponse login(LoginRequest request) {
         User user = userRepository.findByKullaniciAdi(request.getKullaniciAdi())
                 .orElseGet(() -> userRepository.findByEmail(request.getKullaniciAdi())
@@ -37,9 +37,8 @@ public class UserService {
         }
     }
 
-    // Signup metodu (düzeltilmiş)
+    // ✅ Kullanıcı kayıt işlemi
     public LoginResponse signup(LoginRequest request) {
-        // Email kontrolü
         if (request.getEmail() == null || request.getEmail().isEmpty()) {
             throw new RuntimeException("Email cannot be empty");
         }
@@ -47,7 +46,6 @@ public class UserService {
             throw new RuntimeException("Email is already in use");
         }
 
-        // Username kontrolü
         if (request.getKullaniciAdi() == null || request.getKullaniciAdi().isEmpty()) {
             throw new RuntimeException("Username cannot be empty");
         }
@@ -55,13 +53,15 @@ public class UserService {
             throw new RuntimeException("Username is already in use");
         }
 
-        // Kullanıcı oluşturma
         User user = new User();
         user.setKullaniciAdi(request.getKullaniciAdi());
         user.setSifre(passwordEncoder.encode(request.getSifre()));
         user.setEmail(request.getEmail());
-        user.setRol("USER");
-        user.setAktif(true); // 🔥 BURASI EKLENDİ
+
+        // ✅ Rolü dışarıdan al, eğer null ise USER yap
+        user.setRol((request.getRol() == null || request.getRol().isEmpty()) ? "USER" : request.getRol().toUpperCase());
+
+        user.setAktif(true);
         user.setOlusturulmaTarihi(LocalDateTime.now());
         userRepository.save(user);
 
@@ -69,18 +69,15 @@ public class UserService {
         return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
     }
 
-    // Kullanıcı adı ile kullanıcıyı bulur
     public User findByKullaniciAdi(String kullaniciAdi) {
         return userRepository.findByKullaniciAdi(kullaniciAdi)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // Yeni refresh token üretir
     public String generateRefreshToken(String kullaniciAdi) {
         return jwtUtil.generateRefreshToken(kullaniciAdi);
     }
 
-    // Refresh token ile access token'ı yeniler
     public String refreshAccessToken(String refreshToken) {
         if (jwtUtil.isTokenExpired(refreshToken)) {
             throw new RuntimeException("Refresh token expired");

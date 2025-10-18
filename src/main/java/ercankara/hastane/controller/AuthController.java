@@ -52,6 +52,7 @@ public class AuthController {
                 .body(response);
     }
 
+    // ✅ Artık herkes rol belirterek kullanıcı oluşturabilir
     @PostMapping("/signup")
     public ResponseEntity<LoginResponse> signup(@Valid @RequestBody LoginRequest request) {
         LoginResponse response = userService.signup(request);
