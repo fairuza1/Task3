@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,8 +15,9 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    // HS256 için güvenli key
-    private final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // ✅ Sabit, değişmeyen SECRET_KEY tanımı
+    private static final String SECRET = "bu-cok-uzun-ve-sabit-bir-secret-key-32-byte-uzunlugunda-olmali!!!";
+    private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 
     // JWT'den username al
     public String extractUsername(String token) {

@@ -14,9 +14,10 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
-@EnableMethodSecurity
+
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
 
     private final JwtRequestFilter jwtRequestFilter;
@@ -36,9 +37,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
-                        .requestMatchers("/users/**").permitAll()
+                        // 🔓 Auth endpoint'leri herkese açık
+                        .requestMatchers(
+                                "/api/auth/login",
+                                "/api/auth/signup",
+                                "/api/auth/refresh",
+                                "/api/auth/validate-token",
+                                "/api/auth/me"
+                        ).permitAll()
 
+                        // 👤 Kullanıcı işlemleri sadece ADMIN'e açık
+                        .requestMatchers("/api/kullanicilar/**").hasRole("ADMIN")
+
+                        // 🌐 Diğer tüm istekler JWT doğrulaması ister
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

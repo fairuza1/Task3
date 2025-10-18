@@ -35,7 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
 
         // login ve signup endpointlerini JWT kontrolünden bypass et
-        if (path.startsWith("/auth/login") || path.startsWith("/auth/signup")) {
+        if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/signup")) {
             chain.doFilter(request, response);
             return;
         }

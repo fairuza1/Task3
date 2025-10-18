@@ -1,6 +1,8 @@
 // src/App.jsx
 import React, { useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import axios from "axios";
+axios.defaults.withCredentials = true; // 🍪 Cookie gönderimini aç
 
 // components altındaki dosyalara göre import et
 import Login from "./components/Login.jsx";

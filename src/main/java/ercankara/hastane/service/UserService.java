@@ -10,6 +10,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -37,7 +38,7 @@ public class UserService {
         }
     }
 
-    // ✅ Kullanıcı kayıt işlemi
+    // ✅ Yeni kullanıcı oluşturma (Signup)
     public LoginResponse signup(LoginRequest request) {
         if (request.getEmail() == null || request.getEmail().isEmpty()) {
             throw new RuntimeException("Email cannot be empty");
@@ -58,7 +59,7 @@ public class UserService {
         user.setSifre(passwordEncoder.encode(request.getSifre()));
         user.setEmail(request.getEmail());
 
-        // ✅ Rolü dışarıdan al, eğer null ise USER yap
+        // ✅ Rol dışarıdan alınır, eğer boşsa USER atanır
         user.setRol((request.getRol() == null || request.getRol().isEmpty()) ? "USER" : request.getRol().toUpperCase());
 
         user.setAktif(true);
@@ -69,20 +70,62 @@ public class UserService {
         return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
     }
 
+    // ✅ Kullanıcıyı kullanıcı adına göre bul
     public User findByKullaniciAdi(String kullaniciAdi) {
         return userRepository.findByKullaniciAdi(kullaniciAdi)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
+    // ✅ Yeni refresh token üret
     public String generateRefreshToken(String kullaniciAdi) {
         return jwtUtil.generateRefreshToken(kullaniciAdi);
     }
 
+    // ✅ Refresh token ile access token yenile
     public String refreshAccessToken(String refreshToken) {
         if (jwtUtil.isTokenExpired(refreshToken)) {
             throw new RuntimeException("Refresh token expired");
         }
         String kullaniciAdi = jwtUtil.extractUsername(refreshToken);
         return jwtUtil.generateToken(kullaniciAdi);
+    }
+
+    // ✅ Admin paneli için tüm kullanıcıları getir
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    // ✅ ID ile kullanıcı getir
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    // ✅ Yeni kullanıcı oluştur (Admin paneli üzerinden)
+    public User createUser(User user) {
+        if (userRepository.findByKullaniciAdi(user.getKullaniciAdi()).isPresent()) {
+            throw new RuntimeException("Username already exists");
+        }
+        user.setSifre(passwordEncoder.encode(user.getSifre()));
+        if (user.getRol() == null || user.getRol().isEmpty()) {
+            user.setRol("USER");
+        }
+        user.setAktif(true);
+        user.setOlusturulmaTarihi(LocalDateTime.now());
+        return userRepository.save(user);
+    }
+
+    // ✅ Kullanıcı güncelle
+    public User updateUser(Long id, User updatedUser) {
+        User existing = getUserById(id);
+        existing.setEmail(updatedUser.getEmail());
+        existing.setRol(updatedUser.getRol());
+        existing.setAktif(updatedUser.getAktif());
+        return userRepository.save(existing);
+    }
+
+    // ✅ Kullanıcı sil
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }
