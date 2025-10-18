@@ -51,6 +51,24 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .body(response);
     }
+    @GetMapping("/me")
+    public ResponseEntity<?> getCurrentUser(@RequestHeader("Authorization") String authHeader) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(401).body("Token missing or invalid");
+        }
+
+        String token = authHeader.substring(7); // "Bearer " kısmını at
+        String kullaniciAdi = jwtUtil.extractUsername(token);
+        var user = userService.findByKullaniciAdi(kullaniciAdi);
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("id", user.getId());
+        response.put("kullaniciAdi", user.getKullaniciAdi());
+        response.put("email", user.getEmail());
+        response.put("rol", user.getRol());
+
+        return ResponseEntity.ok(response);
+    }
 
     // ✅ Artık herkes rol belirterek kullanıcı oluşturabilir
     @PostMapping("/signup")
