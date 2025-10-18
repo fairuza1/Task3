@@ -15,7 +15,7 @@ function Login() {
 
         try {
             // 🔐 Giriş isteği
-            const response = await axios.post('http://localhost:8080/auth/login', {
+            const response = await axios.post('http://localhost:8080/api/auth/login', {
                 kullaniciAdi: user,
                 sifre: sifre
             },
