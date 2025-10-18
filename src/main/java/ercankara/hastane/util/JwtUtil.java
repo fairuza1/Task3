@@ -7,35 +7,39 @@ import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
 
 @Component
 public class JwtUtil {
 
-    // ✅ Sabit ve değişmeyen SECRET_KEY (32 byte veya daha uzun olmalı!)
+    // ✅ Sabit ve güvenli SECRET_KEY (32+ byte olmalı)
     private static final String SECRET = "bu-cok-uzun-ve-sabit-bir-secret-key-32-byte-uzunlugunda-olmali!!!";
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    // 🔐 Token'dan kullanıcı adını al
+    // 🔐 Kullanıcı adını token'dan çıkar
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // ⏰ Token'ın süresini al
+    // 🔐 Rol bilgisini token'dan çıkar
+    // Not: Artık liste şeklinde dönüyoruz çünkü Spring roles listesi bekler
+    public List<String> extractRoles(String token) {
+        final Claims claims = extractAllClaims(token);
+        return claims.get("roles", List.class);
+    }
+
+    // ⏰ Token'ın son geçerlilik tarihini al
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // 🧠 Token'dan herhangi bir claim al
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    // 📦 Herhangi bir claim'i çıkar
+    public <T> T extractClaim(String token, java.util.function.Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    // 📜 Tüm claim'leri çözümle
+    // 📜 Token içindeki tüm claim'leri çözümle
     private Claims extractAllClaims(String token) {
         try {
             return Jwts.parserBuilder()
@@ -58,18 +62,20 @@ public class JwtUtil {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30)) // 30 gün
+                .setExpiration(new Date(System.currentTimeMillis() + 1000L * 60 * 60 * 24 * 30))
                 .signWith(SECRET_KEY, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    // 🪪 Access token oluştur (1 gün geçerli)
-    public String generateToken(String username) {
+    // 🪪 Access token oluştur (rol bilgisiyle birlikte)
+    public String generateToken(String kullaniciAdi, String role) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, username);
+        // ✅ Burada rolü ROLE_ ile başlatarak liste şeklinde ekliyoruz
+        claims.put("roles", Collections.singletonList("ROLE_" + role));
+        return createToken(claims, kullaniciAdi);
     }
 
-    // 🧪 Token oluşturma metodu
+    // 🧪 Token oluşturma işlemi
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)
@@ -80,7 +86,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // ✅ Token geçerli mi?
+    // ✅ Token geçerli mi kontrol et
     public Boolean validateToken(String token, String username) {
         final String extractedUsername = extractUsername(token);
         return (extractedUsername.equals(username) && !isTokenExpired(token));

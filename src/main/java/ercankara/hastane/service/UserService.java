@@ -31,7 +31,8 @@ public class UserService {
                         .orElseThrow(() -> new RuntimeException("User not found")));
 
         if (passwordEncoder.matches(request.getSifre(), user.getSifre())) {
-            String token = jwtUtil.generateToken(user.getKullaniciAdi());
+            // 🔐 Rol ile birlikte token oluştur
+            String token = jwtUtil.generateToken(user.getKullaniciAdi(), user.getRol());
             return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
         } else {
             throw new RuntimeException("Invalid credentials");
@@ -59,14 +60,15 @@ public class UserService {
         user.setSifre(passwordEncoder.encode(request.getSifre()));
         user.setEmail(request.getEmail());
 
-        // ✅ Rol dışarıdan alınır, eğer boşsa USER atanır
+        // ✅ Rol boşsa USER olarak atanır
         user.setRol((request.getRol() == null || request.getRol().isEmpty()) ? "USER" : request.getRol().toUpperCase());
 
         user.setAktif(true);
         user.setOlusturulmaTarihi(LocalDateTime.now());
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getKullaniciAdi());
+        // ✅ Rol ile birlikte token oluştur
+        String token = jwtUtil.generateToken(user.getKullaniciAdi(), user.getRol());
         return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
     }
 
@@ -87,7 +89,8 @@ public class UserService {
             throw new RuntimeException("Refresh token expired");
         }
         String kullaniciAdi = jwtUtil.extractUsername(refreshToken);
-        return jwtUtil.generateToken(kullaniciAdi);
+        User user = findByKullaniciAdi(kullaniciAdi);
+        return jwtUtil.generateToken(kullaniciAdi, user.getRol());
     }
 
     // ✅ Admin paneli için tüm kullanıcıları getir
