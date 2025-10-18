@@ -9,6 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 @Service
 public class UserService {
 
@@ -23,13 +25,13 @@ public class UserService {
 
     // Login metodu
     public LoginResponse login(LoginRequest request) {
-        User user = userRepository.findByUsername(request.getUsername())
-                .orElseGet(() -> userRepository.findByEmail(request.getUsername())
+        User user = userRepository.findByKullaniciAdi(request.getKullaniciAdi())
+                .orElseGet(() -> userRepository.findByEmail(request.getKullaniciAdi())
                         .orElseThrow(() -> new RuntimeException("User not found")));
 
-        if (passwordEncoder.matches(request.getPassword(), user.getPassword())) {
-            String token = jwtUtil.generateToken(user.getUsername());
-            return new LoginResponse(token, user.getId(), user.getUsername());
+        if (passwordEncoder.matches(request.getSifre(), user.getSifre())) {
+            String token = jwtUtil.generateToken(user.getKullaniciAdi());
+            return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
         } else {
             throw new RuntimeException("Invalid credentials");
         }
@@ -46,33 +48,36 @@ public class UserService {
         }
 
         // Username kontrolü
-        if (request.getUsername() == null || request.getUsername().isEmpty()) {
+        if (request.getKullaniciAdi() == null || request.getKullaniciAdi().isEmpty()) {
             throw new RuntimeException("Username cannot be empty");
         }
-        if (userRepository.findByUsername(request.getUsername()).isPresent()) {
+        if (userRepository.findByKullaniciAdi(request.getKullaniciAdi()).isPresent()) {
             throw new RuntimeException("Username is already in use");
         }
 
         // Kullanıcı oluşturma
         User user = new User();
-        user.setUsername(request.getUsername());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
+        user.setKullaniciAdi(request.getKullaniciAdi());
+        user.setSifre(passwordEncoder.encode(request.getSifre()));
         user.setEmail(request.getEmail());
+        user.setRol("USER");
+        user.setAktif(true); // 🔥 BURASI EKLENDİ
+        user.setOlusturulmaTarihi(LocalDateTime.now());
         userRepository.save(user);
 
-        String token = jwtUtil.generateToken(user.getUsername());
-        return new LoginResponse(token, user.getId(), user.getUsername());
+        String token = jwtUtil.generateToken(user.getKullaniciAdi());
+        return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
     }
 
     // Kullanıcı adı ile kullanıcıyı bulur
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public User findByKullaniciAdi(String kullaniciAdi) {
+        return userRepository.findByKullaniciAdi(kullaniciAdi)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
     // Yeni refresh token üretir
-    public String generateRefreshToken(String username) {
-        return jwtUtil.generateRefreshToken(username);
+    public String generateRefreshToken(String kullaniciAdi) {
+        return jwtUtil.generateRefreshToken(kullaniciAdi);
     }
 
     // Refresh token ile access token'ı yeniler
@@ -80,7 +85,7 @@ public class UserService {
         if (jwtUtil.isTokenExpired(refreshToken)) {
             throw new RuntimeException("Refresh token expired");
         }
-        String username = jwtUtil.extractUsername(refreshToken);
-        return jwtUtil.generateToken(username);
+        String kullaniciAdi = jwtUtil.extractUsername(refreshToken);
+        return jwtUtil.generateToken(kullaniciAdi);
     }
 }

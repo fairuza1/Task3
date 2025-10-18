@@ -30,7 +30,7 @@ public class AuthController {
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         LoginResponse response = userService.login(request);
         String token = response.getToken();
-        String refreshToken = userService.generateRefreshToken(request.getUsername());
+        String refreshToken = userService.generateRefreshToken(request.getKullaniciAdi());
 
         ResponseCookie authCookie = ResponseCookie.from("jwt", token)
                 .httpOnly(true)
@@ -105,8 +105,8 @@ public class AuthController {
 
         if (jwt != null) {
             try {
-                String username = jwtUtil.extractUsername(jwt);
-                if (jwtUtil.validateToken(jwt, username)) {
+                String kullaniciAdi = jwtUtil.extractUsername(jwt);
+                if (jwtUtil.validateToken(jwt, kullaniciAdi)) {
                     response.put("isValid", true);
                     return ResponseEntity.ok(response);
                 }

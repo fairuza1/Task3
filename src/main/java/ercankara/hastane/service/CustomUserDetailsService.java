@@ -19,11 +19,11 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByKullaniciAdi(username);
         if (!user.isPresent()) {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
 
-        return new org.springframework.security.core.userdetails.User(user.get().getUsername(), user.get().getPassword(), new ArrayList<>());
+        return new org.springframework.security.core.userdetails.User(user.get().getKullaniciAdi(), user.get().getSifre(), new ArrayList<>());
     }
 }

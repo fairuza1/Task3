@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Alert } from '@mui/material';
 
 function Signup() {
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    const [kullaniciAdi, setKullaniciAdi] = useState('');
+    const [sifre, setSifre] = useState('');
     const [email, setEmail] = useState('');
     const [error, setError] = useState('');
     const [message, setMessage] = useState('');
@@ -16,7 +16,7 @@ function Signup() {
         try {
             const response = await axios.post(
                 'http://localhost:8080/auth/signup',
-                { username, password, email },
+                {kullaniciAdi, sifre, email },
                 { withCredentials: true } // backend cookie ile uyumlu
             );
 
@@ -32,19 +32,19 @@ function Signup() {
             <Box component="form" onSubmit={handleSignup} sx={{ mt: 5 }}>
                 <Typography variant="h4" gutterBottom>Signup</Typography>
                 <TextField
-                    label="Username"
+                    label="KullanıcıAdı"
                     fullWidth
                     margin="normal"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={kullaniciAdi}
+                    onChange={(e) => setKullaniciAdi(e.target.value)}
                 />
                 <TextField
-                    label="Password"
+                    label="sifre"
                     type="password"
                     fullWidth
                     margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={sifre}
+                    onChange={(e) => setSifre(e.target.value)}
                 />
                 <TextField
                     label="Email"

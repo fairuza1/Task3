@@ -10,5 +10,5 @@ import lombok.NoArgsConstructor;
 public class LoginResponse {
     private String token;
     private Long userId;
-    private String username;  // username alanını ekleyin
+    private String kullaniciAdi;  // username alanını ekleyin
 }

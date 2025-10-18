@@ -22,13 +22,20 @@ public class User {
     private Long id;
 
     @Column(nullable = false, unique = true)
-    private String username;
+    private String kullaniciAdi;
 
     @Column(nullable = false)
-    private String password;
+    private String sifre;
 
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
+    private String rol;
 
+    @Column(nullable = false)
+    private Boolean aktif ;
+
+    @Column(nullable = false)
+    private  LocalDateTime olusturulmaTarihi;
 }

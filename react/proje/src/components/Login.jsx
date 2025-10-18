@@ -5,7 +5,7 @@ import { TextField, Button, Container, Typography, Box, Alert, Link } from '@mui
 
 function Login({ setIsLoggedIn }) {
     const [user, setUser] = useState('');
-    const [password, setPassword] = useState('');
+    const [sifre, setSifre] = useState('');
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
@@ -13,14 +13,14 @@ function Login({ setIsLoggedIn }) {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8080/auth/login', {
-                username: user,
-                password: password
+                kullaniciAdi: user,
+                sifre: sifre
             });
 
             // Başarılı giriş
             if (response.status === 200) {
                 localStorage.setItem('userId', response.data.userId);
-                localStorage.setItem('username', response.data.username);
+                localStorage.setItem('kullaniciAdi', response.data.kullaniciAdi);
                 setIsLoggedIn(true);
                 setError('');
                 navigate('/home');
@@ -35,19 +35,19 @@ function Login({ setIsLoggedIn }) {
             <Box component="form" onSubmit={handleLogin} sx={{ mt: 5 }}>
                 <Typography variant="h4" gutterBottom>Login</Typography>
                 <TextField
-                    label="Username"
+                    label="KullaniciAdi"
                     fullWidth
                     margin="normal"
                     value={user}
                     onChange={(e) => setUser(e.target.value)}
                 />
                 <TextField
-                    label="Password"
+                    label="sifre"
                     type="password"
                     fullWidth
                     margin="normal"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={sifre}
+                    onChange={(e) => setSifre(e.target.value)}
                 />
                 {error && <Alert severity="error">{error}</Alert>}
                 <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
