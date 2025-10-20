@@ -70,6 +70,7 @@ const UserList = () => {
                         <TableCell>Kullanıcı Adı</TableCell>
                         <TableCell>Email</TableCell>
                         <TableCell>Rol</TableCell>
+                        <TableCell>Oluşturulma Tarihi</TableCell> {/* ✅ eklendi */}
                         <TableCell>Durum</TableCell>
                         <TableCell>İşlemler</TableCell>
                     </TableRow>
@@ -81,6 +82,9 @@ const UserList = () => {
                             <TableCell>{user.kullaniciAdi}</TableCell>
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{user.rol}</TableCell>
+                            <TableCell>
+                                {new Date(user.olusturulmaTarihi).toLocaleString("tr-TR")}
+                            </TableCell> {/* ✅ tarihi okunabilir göster */}
                             <TableCell>{user.aktif ? "✅ Aktif" : "⛔ Pasif"}</TableCell>
                             <TableCell>
                                 <Box sx={{ display: "flex", gap: 1 }}>
