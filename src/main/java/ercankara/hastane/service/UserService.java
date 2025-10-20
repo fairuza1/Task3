@@ -121,6 +121,7 @@ public class UserService {
     // ✅ Kullanıcı güncelle
     public User updateUser(Long id, User updatedUser) {
         User existing = getUserById(id);
+        existing.setKullaniciAdi(updatedUser.getKullaniciAdi());
         existing.setEmail(updatedUser.getEmail());
         existing.setRol(updatedUser.getRol());
         existing.setAktif(updatedUser.getAktif());

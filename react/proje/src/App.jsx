@@ -11,6 +11,7 @@ import Home from "./components/Home.jsx";
 import AdminDashboard from "./components/admin/AdminDashboard";
 import UserList from "./components/admin/UserList";
 import CreateUser from "./components/admin/CreateUser";
+import EditUser from "./components/admin/EditUser";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,6 +25,7 @@ function App() {
                 <Route path="/admin" element={<AdminDashboard />} />
                 <Route path="/admin/users" element={<UserList />} />
                 <Route path="/admin/create-user" element={<CreateUser />} />
+                <Route path="/admin/users/edit/:id" element={<EditUser />} />
             </Routes>
         </Router>
     );
