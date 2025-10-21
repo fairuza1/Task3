@@ -3,8 +3,8 @@ package ercankara.hastane.service;
 import ercankara.hastane.entity.Doktor;
 import ercankara.hastane.repository.DoktorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -16,48 +16,53 @@ public class DoktorService {
     @Autowired
     private DoktorRepository doktorRepository;
 
-    // ✅ Tüm doktorları getir (BAS_DOKTOR ve DOKTOR görebilir)
+    // 📋 Tüm doktorları listele (Admin, Baş Doktor, Doktor)
     public List<Doktor> getAllDoktorlar() {
         return doktorRepository.findAll();
     }
 
-    // ✅ ID ile doktor getir
+    // 🔍 ID ile doktor getir
     public Doktor getDoktorById(Long id) {
         return doktorRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Doktor bulunamadı"));
     }
 
-    // ✅ Yeni doktor oluştur (sadece BAS_DOKTOR)
+    // ➕ Yeni doktor oluştur (Admin ve Baş Doktor)
     public Doktor createDoktor(Doktor doktor) {
-        checkBasDoktorYetkisi();
+        checkAdminOrBasDoktorYetkisi();
         doktor.setOlusturulmaTarihi(LocalDateTime.now());
         return doktorRepository.save(doktor);
     }
 
-    // ✅ Doktor güncelle (sadece BAS_DOKTOR)
+    // ✏️ Doktor güncelle (Admin ve Baş Doktor)
     public Doktor updateDoktor(Long id, Doktor updated) {
-        checkBasDoktorYetkisi();
+        checkAdminOrBasDoktorYetkisi();
         Doktor doktor = getDoktorById(id);
+
         doktor.setAdSoyad(updated.getAdSoyad());
         doktor.setUzmanlikAlani(updated.getUzmanlikAlani());
         doktor.setTelefon(updated.getTelefon());
         doktor.setKullanici(updated.getKullanici());
+
         return doktorRepository.save(doktor);
     }
 
-    // ✅ Doktor sil (sadece BAS_DOKTOR)
+    // 🗑️ Doktor sil (Admin ve Baş Doktor)
     public void deleteDoktor(Long id) {
-        checkBasDoktorYetkisi();
+        checkAdminOrBasDoktorYetkisi();
         doktorRepository.deleteById(id);
     }
 
-    // 📌 Yardımcı metot: Baş doktor yetkisi var mı kontrol et
-    private void checkBasDoktorYetkisi() {
+    // 📌 Yardımcı metot: Giriş yapan kişi Admin mi veya Baş Doktor mu?
+    private void checkAdminOrBasDoktorYetkisi() {
+        boolean admin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
+
         boolean basDoktor = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_BAS_DOKTOR"));
 
-        if (!basDoktor) {
-            throw new RuntimeException("Bu işlemi sadece Baş Doktor yapabilir!");
+        if (!admin && !basDoktor) {
+            throw new RuntimeException("Bu işlemi sadece Admin veya Baş Doktor yapabilir!");
         }
     }
 }

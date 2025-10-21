@@ -12,6 +12,9 @@ import AdminDashboard from "./components/admin/AdminDashboard";
 import UserList from "./components/admin/UserList";
 import CreateUser from "./components/admin/CreateUser";
 import EditUser from "./components/admin/EditUser";
+import DoctorList from "./components/doktor/DoctorList";
+import CreateDoctor from "./components/doktor/CreateDoctor";
+import EditDoctor from "./components/doktor/EditDoctor";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -26,6 +29,9 @@ function App() {
                 <Route path="/admin/users" element={<UserList />} />
                 <Route path="/admin/create-user" element={<CreateUser />} />
                 <Route path="/admin/users/edit/:id" element={<EditUser />} />
+                    <Route path="/doktorlar" element={<DoctorList />} />
+                <Route path="/doktorlar/ekle" element={<CreateDoctor />} />
+                <Route path="/doktorlar/duzenle/:id" element={<EditDoctor />} />
             </Routes>
         </Router>
     );

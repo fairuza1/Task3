@@ -17,36 +17,36 @@ public class DoktorController {
     @Autowired
     private DoktorService doktorService;
 
-    // 📋 Tüm doktorları listele (BAS_DOKTOR ve DOKTOR)
+    // 📋 Tüm doktorları listele (Admin, Baş Doktor, Doktor)
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
     @GetMapping
     public List<Doktor> getAllDoktorlar() {
         return doktorService.getAllDoktorlar();
     }
 
-    // 🔍 ID ile doktor getir (BAS_DOKTOR ve DOKTOR)
+    // 🔍 ID ile doktor getir (Admin, Baş Doktor, Doktor)
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
     @GetMapping("/{id}")
     public Doktor getDoktorById(@PathVariable Long id) {
         return doktorService.getDoktorById(id);
     }
 
-    // ➕ Yeni doktor oluştur (sadece BAS_DOKTOR)
-    @PreAuthorize("hasRole('BAS_DOKTOR')")
+    // ➕ Yeni doktor oluştur (Admin ve Baş Doktor)
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @PostMapping
     public ResponseEntity<Doktor> createDoktor(@RequestBody Doktor doktor) {
         return ResponseEntity.ok(doktorService.createDoktor(doktor));
     }
 
-    // ✏️ Doktor güncelle (sadece BAS_DOKTOR)
-    @PreAuthorize("hasRole('BAS_DOKTOR')")
+    // ✏️ Doktor güncelle (Admin ve Baş Doktor)
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @PutMapping("/{id}")
     public ResponseEntity<Doktor> updateDoktor(@PathVariable Long id, @RequestBody Doktor doktor) {
         return ResponseEntity.ok(doktorService.updateDoktor(id, doktor));
     }
 
-    // 🗑️ Doktor sil (sadece BAS_DOKTOR)
-    @PreAuthorize("hasRole('BAS_DOKTOR')")
+    // 🗑️ Doktor sil (Admin ve Baş Doktor)
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDoktor(@PathVariable Long id) {
         doktorService.deleteDoktor(id);
