@@ -3,7 +3,6 @@ package ercankara.hastane.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -11,21 +10,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Hasta {
+public class Sekreter {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String adSoyad;
-    private String tcKimlikNo;
-    private LocalDate dogumTarihi;
     private String telefon;
-    private String adres;
+    private String email;
 
-    @ManyToOne
-    @JoinColumn(name = "doktor_id")
-    private Doktor doktor; // Hasta → Doktor ilişkisi (N:1)
+    @OneToOne
+    @JoinColumn(name = "kullanici_id")
+    private User kullanici; // user tablosu ile birebir ilişki
 
     private LocalDateTime olusturulmaTarihi;
 }

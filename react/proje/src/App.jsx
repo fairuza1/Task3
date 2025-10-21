@@ -15,6 +15,10 @@ import EditUser from "./components/admin/EditUser";
 import DoctorList from "./components/doktor/DoctorList";
 import CreateDoctor from "./components/doktor/CreateDoctor";
 import EditDoctor from "./components/doktor/EditDoctor";
+import HastaDuzenle from "./components/sekreter/HastaDuzenle.jsx";
+import HastaEkle from "./components/sekreter/HastaEkle.jsx";
+import SekreterDashboard from "./components/sekreter/SekreterDashboard.jsx";
+import HastaListesi from "./components/sekreter/HastaListesi.jsx";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -29,9 +33,14 @@ function App() {
                 <Route path="/admin/users" element={<UserList />} />
                 <Route path="/admin/create-user" element={<CreateUser />} />
                 <Route path="/admin/users/edit/:id" element={<EditUser />} />
-                    <Route path="/doktorlar" element={<DoctorList />} />
+                <Route path="/doktorlar" element={<DoctorList />} />
                 <Route path="/doktorlar/ekle" element={<CreateDoctor />} />
                 <Route path="/doktorlar/duzenle/:id" element={<EditDoctor />} />
+                <Route path="/sekreter" element={<SekreterDashboard />} />
+                <Route path="/sekreter/hasta-listesi" element={<HastaListesi />} />
+                <Route path="/sekreter/hasta-ekle" element={<HastaEkle />} />
+                <Route path="/sekreter/hasta-duzenle/:id" element={<HastaDuzenle />} />
+
             </Routes>
         </Router>
     );

@@ -18,14 +18,14 @@ public class DoktorController {
     private DoktorService doktorService;
 
     // 📋 Tüm doktorları listele (Admin, Baş Doktor, Doktor)
-    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR','SEKRETER')")
     @GetMapping
     public List<Doktor> getAllDoktorlar() {
         return doktorService.getAllDoktorlar();
     }
 
     // 🔍 ID ile doktor getir (Admin, Baş Doktor, Doktor)
-    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR','SEKRETER')")
     @GetMapping("/{id}")
     public Doktor getDoktorById(@PathVariable Long id) {
         return doktorService.getDoktorById(id);

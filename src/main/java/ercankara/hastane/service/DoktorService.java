@@ -54,7 +54,7 @@ public class DoktorService {
     }
 
     // 📌 Yardımcı metot: Giriş yapan kişi Admin mi veya Baş Doktor mu?
-    private void checkAdminOrBasDoktorYetkisi() {
+    private void    checkAdminOrBasDoktorYetkisi() {
         boolean admin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));
 
