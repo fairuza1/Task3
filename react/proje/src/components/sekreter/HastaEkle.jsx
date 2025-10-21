@@ -110,7 +110,7 @@ const HastaEkle = () => {
                 <TextField
                     select
                     fullWidth
-                    label="Doktor Seç"
+                    label="Doktor Seç........"
                     margin="normal"
                     value={doktorId}
                     onChange={(e) => setDoktorId(e.target.value)}
