@@ -6,7 +6,7 @@ const CreateUser = () => {
     const [kullaniciAdi, setKullaniciAdi] = useState("");
     const [sifre, setSifre] = useState("");
     const [email, setEmail] = useState("");
-    const [rol, setRol] = useState("USER");
+    const [rol, setRol] = useState("");
     const [message, setMessage] = useState("");
 
     const handleSubmit = async (e) => {
@@ -25,9 +25,9 @@ const CreateUser = () => {
             setKullaniciAdi("");
             setSifre("");
             setEmail("");
-            setRol("USER");
+            setRol("");
         } catch (err) {
-            setMessage("❌ Kullanıcı oluşturulamadı. Yetkiniz olmayabilir.");
+            setMessage("❌ Kullanıcı oluşturulamadı. Yetkiniz olmayabilir veya veriler hatalı.");
         }
     };
 
@@ -44,13 +44,16 @@ const CreateUser = () => {
                     margin="normal"
                     value={kullaniciAdi}
                     onChange={(e) => setKullaniciAdi(e.target.value)}
+                    required
                 />
                 <TextField
                     fullWidth
                     label="Email"
+                    type="email"
                     margin="normal"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    required
                 />
                 <TextField
                     fullWidth
@@ -59,19 +62,22 @@ const CreateUser = () => {
                     margin="normal"
                     value={sifre}
                     onChange={(e) => setSifre(e.target.value)}
+                    required
                 />
                 <TextField
                     select
                     fullWidth
-                    label="Rol"
+                    label="Rol Seç"
                     margin="normal"
                     value={rol}
                     onChange={(e) => setRol(e.target.value)}
+                    required
                 >
-                    <MenuItem value="ADMIN">ADMIN</MenuItem>
-                    <MenuItem value="DOKTOR">DOKTOR</MenuItem>
-                    <MenuItem value="SEKRETER">SEKRETER</MenuItem>
-                    <MenuItem value="USER">USER</MenuItem>
+                    <MenuItem value="ADMIN">👑 ADMIN</MenuItem>
+                    <MenuItem value="BAS_DOKTOR">🩺 BAS_DOKTOR</MenuItem>
+                    <MenuItem value="DOKTOR">👨‍⚕️ DOKTOR</MenuItem>
+                    <MenuItem value="SEKRETER">📞 SEKRETER</MenuItem>
+                    <MenuItem value="USER">👤 USER</MenuItem>
                 </TextField>
 
                 <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>

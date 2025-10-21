@@ -49,9 +49,10 @@ public class UserService {
         user.setKullaniciAdi(request.getKullaniciAdi());
         user.setSifre(passwordEncoder.encode(request.getSifre()));
         user.setEmail(request.getEmail());
-        user.setRol((request.getRol() == null || request.getRol().isEmpty()) ? "USER" : request.getRol().toUpperCase());
+        user.setRol("USER"); // ✅ her zaman USER olarak kaydolur
         user.setAktif(true);
         user.setOlusturulmaTarihi(LocalDateTime.now());
+
         userRepository.save(user);
 
         String token = jwtUtil.generateToken(user.getKullaniciAdi(), user.getRol());

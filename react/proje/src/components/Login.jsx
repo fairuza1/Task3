@@ -15,10 +15,12 @@ function Login() {
 
         try {
             // 🔐 Giriş isteği
-            const response = await axios.post('http://localhost:8080/api/auth/login', {
-                kullaniciAdi: user,
-                sifre: sifre
-            },
+            const response = await axios.post(
+                'http://localhost:8080/api/auth/login',
+                {
+                    kullaniciAdi: user,
+                    sifre: sifre,
+                },
                 { withCredentials: true }
             );
 
@@ -30,16 +32,19 @@ function Login() {
 
                 // 👤 Kullanıcı bilgilerini çek
                 const meResponse = await axios.get('http://localhost:8080/api/auth/me', {
-                    headers: { Authorization: `Bearer ${token}` }
+                    headers: { Authorization: `Bearer ${token}` },
                 });
 
                 const role = meResponse.data.rol;
+                console.log("✅ Giriş yapan rol:", role);
 
                 // 🔀 Role göre yönlendirme
                 if (role === 'ADMIN') {
                     navigate('/admin');
+                } else if (role === 'BAS_DOKTOR') {
+                    navigate('/doktorlar'); // 📍 Baş doktor paneli sayfanı buraya tanımlayacağız
                 } else if (role === 'DOKTOR') {
-                    navigate('/doktor');
+                    navigate('/doktorlar'); // 📍 Doktor için özel sayfa
                 } else if (role === 'SEKRETER') {
                     navigate('/sekreter');
                 } else {
@@ -47,14 +52,19 @@ function Login() {
                 }
             }
         } catch (err) {
-            setError(err.response?.data?.message || 'Giriş başarısız! Lütfen bilgilerinizi kontrol edin.');
+            setError(
+                err.response?.data?.message ||
+                'Giriş başarısız! Lütfen bilgilerinizi kontrol edin.'
+            );
         }
     };
 
     return (
         <Container maxWidth="sm">
             <Box component="form" onSubmit={handleLogin} sx={{ mt: 5 }}>
-                <Typography variant="h4" gutterBottom>Giriş Yap</Typography>
+                <Typography variant="h4" gutterBottom>
+                    Giriş Yap
+                </Typography>
 
                 <TextField
                     label="Kullanıcı Adı"

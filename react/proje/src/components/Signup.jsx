@@ -15,7 +15,7 @@ function Signup() {
         e.preventDefault();
         try {
             const response = await axios.post(
-                'http://localhost:8080/auth/signup',
+                'http://localhost:8080/api/auth/signup',
                 {kullaniciAdi, sifre, email },
                 { withCredentials: true } // backend cookie ile uyumlu
             );
