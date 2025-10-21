@@ -46,8 +46,11 @@ public class SecurityConfig {
                                 "/api/auth/me"
                         ).permitAll()
 
-                        // 👤 Kullanıcı işlemleri sadece ADMIN'e açık
-                        .requestMatchers("/api/kullanicilar/**").hasRole("ADMIN")
+                        // 👤 Kullanıcı işlemleri ADMIN ve BAS_DOKTOR'a açık
+                        .requestMatchers("/api/kullanicilar/**").hasAnyRole("ADMIN", "BAS_DOKTOR")
+
+                        // 👨‍⚕️ Doktor işlemleri DOKTOR ve BAS_DOKTOR'a açık
+                        .requestMatchers("/api/doktorlar/**").hasAnyRole("DOKTOR", "BAS_DOKTOR", "ADMIN")
 
                         // 🌐 Diğer tüm istekler JWT doğrulaması ister
                         .anyRequest().authenticated()

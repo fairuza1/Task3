@@ -17,39 +17,52 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    // ✅ Tüm kullanıcıları listele (Sadece ADMIN görebilir)
+    // ✅ Admin tüm kullanıcıları görebilir
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
 
-    // ✅ ID ile kullanıcı detayı
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/{id}")
-    public User getUserById(@PathVariable Long id) {
-        return userService.getUserById(id);
+    // ✅ Baş doktor sadece DOKTOR rolündekileri görebilir
+    @PreAuthorize("hasAnyRole('ADMIN', 'BAS_DOKTOR')")
+    @GetMapping("/doktorlar")
+    public List<User> getAllDoktorUsers() {
+        return userService.getAllDoktorUsers();
     }
 
-    // ✅ Yeni kullanıcı oluştur (rol parametresi ile)
-    @PreAuthorize("hasRole('ADMIN')")
+    // ✅ ID ile kullanıcı getir (Admin her kullanıcıyı, Baş Doktor sadece DOKTOR rolündekileri)
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserByIdWithRoleCheck(id);
+    }
+
+    // ✅ Yeni kullanıcı oluştur
+    // - Admin: tüm roller
+    // - Baş Doktor: sadece DOKTOR rolü
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
-        return ResponseEntity.ok(userService.createUser(user));
+        return ResponseEntity.ok(userService.createUserWithRoleCheck(user));
     }
 
     // ✅ Kullanıcı güncelle
-    @PreAuthorize("hasRole('ADMIN')")
+    // - Admin: tüm kullanıcılar
+    // - Baş Doktor: sadece DOKTOR rolündekiler
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
-        return ResponseEntity.ok(userService.updateUser(id, updatedUser));
+        return ResponseEntity.ok(userService.updateUserWithRoleCheck(id, updatedUser));
     }
 
     // ✅ Kullanıcı sil
-    @PreAuthorize("hasRole('ADMIN')")
+    // - Admin: tüm kullanıcılar
+    // - Baş Doktor: sadece DOKTOR rolündekiler
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+        userService.deleteUserWithRoleCheck(id);
         return ResponseEntity.ok("Kullanıcı silindi");
     }
 }

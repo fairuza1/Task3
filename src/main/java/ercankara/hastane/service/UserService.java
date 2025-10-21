@@ -6,6 +6,8 @@ import ercankara.hastane.entity.User;
 import ercankara.hastane.repository.UserRepository;
 import ercankara.hastane.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,7 +33,6 @@ public class UserService {
                         .orElseThrow(() -> new RuntimeException("User not found")));
 
         if (passwordEncoder.matches(request.getSifre(), user.getSifre())) {
-            // 🔐 Rol ile birlikte token oluştur
             String token = jwtUtil.generateToken(user.getKullaniciAdi(), user.getRol());
             return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
         } else {
@@ -59,15 +60,11 @@ public class UserService {
         user.setKullaniciAdi(request.getKullaniciAdi());
         user.setSifre(passwordEncoder.encode(request.getSifre()));
         user.setEmail(request.getEmail());
-
-        // ✅ Rol boşsa USER olarak atanır
         user.setRol((request.getRol() == null || request.getRol().isEmpty()) ? "USER" : request.getRol().toUpperCase());
-
         user.setAktif(true);
         user.setOlusturulmaTarihi(LocalDateTime.now());
         userRepository.save(user);
 
-        // ✅ Rol ile birlikte token oluştur
         String token = jwtUtil.generateToken(user.getKullaniciAdi(), user.getRol());
         return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
     }
@@ -98,13 +95,63 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    // ✅ ID ile kullanıcı getir
+    // ✅ Sadece DOKTOR rolündekileri getir
+    public List<User> getAllDoktorUsers() {
+        return userRepository.findAll()
+                .stream()
+                .filter(user -> "DOKTOR".equalsIgnoreCase(user.getRol()))
+                .toList();
+    }
+
+    // ✅ Rol kontrolü ile ID’ye göre kullanıcı getir
+    public User getUserByIdWithRoleCheck(Long id) {
+        User user = getUserById(id);
+        if (isBasDoktor() && !"DOKTOR".equalsIgnoreCase(user.getRol())) {
+            throw new RuntimeException("Baş doktor sadece DOKTOR rolündeki kullanıcıları görebilir!");
+        }
+        return user;
+    }
+
+    // ✅ Rol kontrolü ile kullanıcı oluştur
+    public User createUserWithRoleCheck(User user) {
+        if (isBasDoktor() && !"DOKTOR".equalsIgnoreCase(user.getRol())) {
+            throw new RuntimeException("Baş doktor sadece DOKTOR rolünde kullanıcı oluşturabilir!");
+        }
+        return createUser(user);
+    }
+
+    // ✅ Rol kontrolü ile kullanıcı güncelle
+    public User updateUserWithRoleCheck(Long id, User updatedUser) {
+        User existing = getUserById(id);
+        if (isBasDoktor() && !"DOKTOR".equalsIgnoreCase(existing.getRol())) {
+            throw new RuntimeException("Baş doktor sadece DOKTOR rolündeki kullanıcıları güncelleyebilir!");
+        }
+
+        existing.setKullaniciAdi(updatedUser.getKullaniciAdi());
+        existing.setEmail(updatedUser.getEmail());
+        existing.setRol(updatedUser.getRol());
+        existing.setAktif(updatedUser.getAktif());
+        existing.setOlusturulmaTarihi(updatedUser.getOlusturulmaTarihi());
+
+        return userRepository.save(existing);
+    }
+
+    // ✅ Rol kontrolü ile kullanıcı sil
+    public void deleteUserWithRoleCheck(Long id) {
+        User existing = getUserById(id);
+        if (isBasDoktor() && !"DOKTOR".equalsIgnoreCase(existing.getRol())) {
+            throw new RuntimeException("Baş doktor sadece DOKTOR rolündeki kullanıcıları silebilir!");
+        }
+        userRepository.deleteById(id);
+    }
+
+    // ✅ ID ile kullanıcı getir (iç servis)
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // ✅ Yeni kullanıcı oluştur (Admin paneli üzerinden)
+    // ✅ Yeni kullanıcı oluştur (iç servis)
     public User createUser(User user) {
         if (userRepository.findByKullaniciAdi(user.getKullaniciAdi()).isPresent()) {
             throw new RuntimeException("Username already exists");
@@ -118,19 +165,9 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ✅ Kullanıcı güncelle
-    public User updateUser(Long id, User updatedUser) {
-        User existing = getUserById(id);
-        existing.setOlusturulmaTarihi(updatedUser.getOlusturulmaTarihi());
-        existing.setKullaniciAdi(updatedUser.getKullaniciAdi());
-        existing.setEmail(updatedUser.getEmail());
-        existing.setRol(updatedUser.getRol());
-        existing.setAktif(updatedUser.getAktif());
-        return userRepository.save(existing);
-    }
-
-    // ✅ Kullanıcı sil
-    public void deleteUser(Long id) {
-        userRepository.deleteById(id);
+    // ✅ Giriş yapan kişi Baş Doktor mu?
+    private boolean isBasDoktor() {
+        return SecurityContextHolder.getContext().getAuthentication().getAuthorities()
+                .contains(new SimpleGrantedAuthority("ROLE_BAS_DOKTOR"));
     }
 }

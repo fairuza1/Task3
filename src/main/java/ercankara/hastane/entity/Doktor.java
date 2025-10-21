@@ -1,18 +1,25 @@
 package ercankara.hastane.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import java.time.LocalDateTime;
+
 @Entity
-@Data
-@Table(name = "doktors")
+@Table(name = "doktorlar")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Doktor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String adSoyad;
 
     @Column(nullable = false)
@@ -21,10 +28,11 @@ public class Doktor {
     @Column(nullable = false)
     private String telefon;
 
-    @Column(nullable = false)
-    private Long kullaniciId;
+    // 🧑‍⚕️ Kullanıcı ile birebir ilişki
+    @OneToOne
+    @JoinColumn(name = "kullanici_id", referencedColumnName = "id")
+    private User kullanici;
 
-
-
-
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime olusturulmaTarihi;
 }
