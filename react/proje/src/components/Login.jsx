@@ -42,9 +42,9 @@ function Login() {
                 if (role === 'ADMIN') {
                     navigate('/admin');
                 } else if (role === 'BAS_DOKTOR') {
-                    navigate('/doktorlar'); // 📍 Baş doktor paneli sayfanı buraya tanımlayacağız
+                    navigate('/doktor'); // 📍 Baş doktor paneli sayfanı buraya tanımlayacağız
                 } else if (role === 'DOKTOR') {
-                    navigate('/doktorlar'); // 📍 Doktor için özel sayfa
+                    navigate('/doktor'); // 📍 Doktor için özel sayfa
                 } else if (role === 'SEKRETER') {
                     navigate('/sekreter');
                 } else {

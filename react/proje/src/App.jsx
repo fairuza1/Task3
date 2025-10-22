@@ -20,9 +20,11 @@ import HastaEkle from "./components/sekreter/HastaEkle.jsx";
 import SekreterDashboard from "./components/sekreter/SekreterDashboard.jsx";
 import HastaListesi from "./components/sekreter/HastaListesi.jsx";
 import MuayeneListesi from "./components/doktor/MuayeneListesi.jsx";
-    import MuayeneEkle from "./components/doktor/MuayeneEkle.jsx";
+import MuayeneEkle from "./components/doktor/MuayeneEkle.jsx";
 import ReceteEkle from "./components/doktor/ReceteEkle.jsx";
-import Muayenelerim from "./components/doktor/Muayenelerim.jsx";
+import MuayeneDetay from "./components/doktor/MuayeneDetay.jsx";
+import DoktorDashboard from "./components/doktor/DoktorDashboard.jsx";
+
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
@@ -46,7 +48,8 @@ function App() {
                 <Route path="/doktor/muayeneler" element={<MuayeneListesi />} />
                 <Route path="/doktor/muayene-ekle" element={<MuayeneEkle />} />
                 <Route path="/doktor/recete-ekle/:id" element={<ReceteEkle />} />
-                <Route path="/muayenelerim" element={<Muayenelerim />} />
+                <Route path="/doktor/muayene-detay/:id" element={<MuayeneDetay />} />
+                <Route path="/doktor" element={<DoktorDashboard />} />
 
             </Routes>
         </Router>
