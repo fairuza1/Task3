@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Container, Typography, TextField, Button, Alert } from "@mui/material";
 
@@ -9,20 +9,20 @@ const ReceteEkle = () => {
     const [doz, setDoz] = useState("");
     const [aciklama, setAciklama] = useState("");
     const [mesaj, setMesaj] = useState("");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const token = localStorage.getItem("token");
             await axios.post(
-                `http://localhost:8080/api/receteler?muayeneId=${id}&ilacAdi=${ilacAdi}&doz=${doz}&aciklama=${aciklama}`,
-                {},
+                "http://localhost:8080/api/receteler",
+                { muayeneId: id, ilacAdi, doz, aciklama },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
+
             setMesaj("✅ Reçete başarıyla oluşturuldu!");
-            setIlacAdi("");
-            setDoz("");
-            setAciklama("");
+            setTimeout(() => navigate("/doktor/muayeneler"), 1500);
         } catch {
             setMesaj("❌ Reçete oluşturulamadı!");
         }

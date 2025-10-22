@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Container, Typography, TextField, Button, MenuItem, Alert } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 const MuayeneEkle = () => {
     const [hastalar, setHastalar] = useState([]);
     const [hastaId, setHastaId] = useState("");
     const [tani, setTani] = useState("");
     const [mesaj, setMesaj] = useState("");
+    const navigate = useNavigate();
 
     useEffect(() => {
         fetchHastalar();
@@ -20,7 +22,7 @@ const MuayeneEkle = () => {
             });
             setHastalar(res.data);
         } catch {
-            setMesaj("Hastalar yüklenemedi!");
+            setMesaj("❌ Hastalar yüklenemedi!");
         }
     };
 
@@ -28,24 +30,25 @@ const MuayeneEkle = () => {
         e.preventDefault();
         try {
             const token = localStorage.getItem("token");
-            const doktorId = localStorage.getItem("userId"); // Giriş yapan doktorun ID'si
-            await axios.post(
-                "http://localhost:8080/api/muayeneler",
-                {
-                    doktorId: doktorId,
-                    hastaId: hastaId,
-                    tani: tani
-                },
-                { headers: {
-                        Authorization: `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    }}
-            );
+            const doktorId = localStorage.getItem("userId");
 
+            const res = await axios.post(
+                "http://localhost:8080/api/muayeneler",
+                { doktorId, hastaId, tani },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        "Content-Type": "application/json",
+                    },
+                }
+            );
 
             setMesaj("✅ Muayene başarıyla eklendi!");
             setHastaId("");
             setTani("");
+
+            // Muayene detayına yönlendir
+            setTimeout(() => navigate(`/doktor/muayene-detay/${res.data.id}`), 1500);
         } catch {
             setMesaj("❌ Muayene eklenemedi.");
         }
