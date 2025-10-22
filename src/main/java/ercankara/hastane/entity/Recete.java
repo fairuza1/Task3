@@ -1,5 +1,6 @@
 package ercankara.hastane.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -17,6 +18,7 @@ public class Recete {
     // 🩺 Her reçete bir muayeneye bağlı
     @OneToOne
     @JoinColumn(name = "muayene_id", nullable = false)
+    @JsonBackReference
     private Muayene muayene;
 
     private String ilacAdi;

@@ -20,7 +20,7 @@ import HastaEkle from "./components/sekreter/HastaEkle.jsx";
 import SekreterDashboard from "./components/sekreter/SekreterDashboard.jsx";
 import HastaListesi from "./components/sekreter/HastaListesi.jsx";
 import MuayeneListesi from "./components/doktor/MuayeneListesi.jsx";
-import MuayeneEkle from "./components/doktor/MuayeneEkle.jsx";
+    import MuayeneEkle from "./components/doktor/MuayeneEkle.jsx";
 import ReceteEkle from "./components/doktor/ReceteEkle.jsx";
 import Muayenelerim from "./components/doktor/Muayenelerim.jsx";
 function App() {

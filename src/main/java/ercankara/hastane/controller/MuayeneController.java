@@ -1,6 +1,8 @@
 package ercankara.hastane.controller;
 
 import ercankara.hastane.entity.Muayene;
+import ercankara.hastane.entity.Doktor;
+import ercankara.hastane.repository.DoktorRepository;
 import ercankara.hastane.service.MuayeneService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +19,9 @@ public class MuayeneController {
 
     @Autowired
     private MuayeneService muayeneService;
+
+    @Autowired
+    private DoktorRepository doktorRepository; // 🔹 Eklendi
 
     // 📋 Tüm muayeneleri listele
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR','SEKRETER')")
@@ -36,11 +41,11 @@ public class MuayeneController {
     @PreAuthorize("hasRole('DOKTOR')")
     @PostMapping
     public ResponseEntity<Muayene> createMuayene(@RequestBody Map<String, Object> body) {
-        Long doktorId = Long.valueOf(body.get("doktorId").toString());
+        Long kullaniciId = Long.valueOf(body.get("doktorId").toString()); // 👈 Kullanıcı ID alıyoruz
         Long hastaId = Long.valueOf(body.get("hastaId").toString());
         String tani = body.get("tani").toString();
 
-        return ResponseEntity.ok(muayeneService.createMuayene(doktorId, hastaId, tani));
+        return ResponseEntity.ok(muayeneService.createMuayene(kullaniciId, hastaId, tani));
     }
 
     // ✏️ Muayene güncelle (sadece Doktor veya Admin)
@@ -58,11 +63,16 @@ public class MuayeneController {
         muayeneService.deleteMuayene(id);
         return ResponseEntity.ok("Muayene silindi.");
     }
-    // 👨‍⚕️ Belirli bir doktorun muayeneleri
+
+    // 👨‍⚕️ Belirli bir doktorun muayeneleri (kullanıcı ID’sine göre)
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
-    @GetMapping("/doktor/{doktorId}")
-    public List<Muayene> getMuayenelerByDoktor(@PathVariable Long doktorId) {
-        return muayeneService.getMuayenelerByDoktor(doktorId);
+    @GetMapping("/doktor/{kullaniciId}")
+    public List<Muayene> getMuayenelerByDoktor(@PathVariable Long kullaniciId) {
+        // 🔎 Kullanıcı ID’den doktoru buluyoruz
+        Doktor doktor = doktorRepository.findByKullaniciId(kullaniciId)
+                .orElseThrow(() -> new RuntimeException("Doktor bulunamadı!"));
+        // Ardından o doktora ait muayeneleri çekiyoruz
+        return muayeneService.getMuayenelerByDoktor(doktor.getId());
     }
 
     // 🧍‍♀️ Belirli bir hastanın muayeneleri

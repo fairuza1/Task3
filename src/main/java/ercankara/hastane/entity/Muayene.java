@@ -1,5 +1,6 @@
 package ercankara.hastane.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -32,5 +33,6 @@ public class Muayene {
 
     // 🔗 Reçete (tekil ilişki)
     @OneToOne(mappedBy = "muayene", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Recete recete;
 }
