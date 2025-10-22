@@ -46,13 +46,26 @@ public class SecurityConfig {
                                 "/api/auth/me"
                         ).permitAll()
 
-                        // 👤 Kullanıcı işlemleri ADMIN ve BAS_DOKTOR'a açık
-                        .requestMatchers("/api/kullanicilar/**").hasAnyRole("ADMIN", "BAS_DOKTOR")
+                        // 👤 Kullanıcı işlemleri
+                        .requestMatchers("/api/kullanicilar/**")
+                        .hasAnyRole("ADMIN", "BAS_DOKTOR")
 
-                        // 👨‍⚕️ Doktor işlemleri Admin, Baş Doktor, Doktor ve Sekreter'e açık
-                                .requestMatchers("/api/doktorlar/**").hasAnyRole("ADMIN", "BAS_DOKTOR", "DOKTOR", "SEKRETER")
-                        // 🩺 Hasta işlemleri Sekreter ve Doktor'a açık
-                                .requestMatchers("/api/hastalar/**").hasAnyRole("SEKRETER", "DOKTOR")
+                        // 👨‍⚕️ Doktor işlemleri
+                        .requestMatchers("/api/doktorlar/**")
+                        .hasAnyRole("ADMIN", "BAS_DOKTOR", "DOKTOR", "SEKRETER")
+
+                        // 🩺 Hasta işlemleri
+                        .requestMatchers("/api/hastalar/**")
+                        .hasAnyRole("SEKRETER", "DOKTOR")
+
+                        // 💊 Reçete işlemleri
+                        .requestMatchers("/api/receteler/**")
+                        .hasAnyRole("DOKTOR", "ADMIN", "BAS_DOKTOR")
+
+                        // ⚕️ Muayene işlemleri
+                        .requestMatchers("/api/muayeneler/**")
+                        .hasAnyRole("DOKTOR", "ADMIN", "BAS_DOKTOR", "SEKRETER")
+
                         // 🌐 Diğer tüm istekler JWT doğrulaması ister
                         .anyRequest().authenticated()
                 )

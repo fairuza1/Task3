@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 
 const EditUser = () => {
-    const { id } = useParams(); // URL'den kullanıcı ID'si al
+    const { id } = useParams(); // URL'den kullanıcı ID'si
     const navigate = useNavigate();
 
     const [user, setUser] = useState({
@@ -103,7 +103,14 @@ const EditUser = () => {
             </Typography>
 
             {message && (
-                <Alert severity={message.startsWith("✅") || message.startsWith("🗑️") ? "success" : "error"} sx={{ mb: 2 }}>
+                <Alert
+                    severity={
+                        message.startsWith("✅") || message.startsWith("🗑️")
+                            ? "success"
+                            : "error"
+                    }
+                    sx={{ mb: 2 }}
+                >
                     {message}
                 </Alert>
             )}
@@ -126,6 +133,7 @@ const EditUser = () => {
                     fullWidth
                 />
 
+                {/* 🎭 Rol seçimi (tüm roller) */}
                 <TextField
                     select
                     label="Rol"
@@ -134,8 +142,11 @@ const EditUser = () => {
                     onChange={handleChange}
                     fullWidth
                 >
-                    <MenuItem value="USER">USER</MenuItem>
                     <MenuItem value="ADMIN">ADMIN</MenuItem>
+                    <MenuItem value="BAS_DOKTOR">BAŞ DOKTOR</MenuItem>
+                    <MenuItem value="DOKTOR">DOKTOR</MenuItem>
+                    <MenuItem value="SEKRETER">SEKRETER</MenuItem>
+                    <MenuItem value="USER">USER</MenuItem>
                 </TextField>
 
                 <FormControlLabel
