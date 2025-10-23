@@ -1,6 +1,8 @@
 package ercankara.hastane.controller;
 
 import ercankara.hastane.entity.User;
+import ercankara.hastane.repository.UserRepository;
+import ercankara.hastane.repository.DoktorRepository;
 import ercankara.hastane.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,12 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DoktorRepository doktorRepository;
 
     // ✅ Sadece ADMIN tüm kullanıcıları görebilir
     @PreAuthorize("hasRole('ADMIN')")
@@ -51,5 +59,22 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+
+    // 🆕 🔹 Rol bazlı kullanıcıları getir (örn: DOKTOR)
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
+    @GetMapping("/role/{rol}")
+    public List<User> getUsersByRole(@PathVariable String rol) {
+        // Role göre kullanıcıları bul
+        List<User> users = userRepository.findByRolIgnoreCase(rol);
+
+        // Eğer rol DOKTOR ise, zaten doktor tablosunda kayıtlı olanları filtrele
+        if (rol.equalsIgnoreCase("DOKTOR")) {
+            users = users.stream()
+                    .filter(user -> !doktorRepository.existsByKullanici_Id(user.getId()))
+                    .toList();
+        }
+
+        return users;
     }
 }

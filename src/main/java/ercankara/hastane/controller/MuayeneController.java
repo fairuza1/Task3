@@ -81,5 +81,9 @@ public class MuayeneController {
     public List<Muayene> getMuayenelerByHasta(@PathVariable Long hastaId) {
         return muayeneService.getMuayenelerByHasta(hastaId);
     }
-
+    @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR','SEKRETER')")
+    @GetMapping("/hasta/{hastaId}/receteler")
+    public List<Muayene> getHastaReceteleri(@PathVariable Long hastaId) {
+        return muayeneService.getMuayenelerByHasta(hastaId);
+    }
 }

@@ -12,6 +12,7 @@ const DoktorDashboard = () => {
                 <Typography variant="h4" gutterBottom>
                     👨‍⚕️ Hoş geldiniz, {doktorAdi}
                 </Typography>
+
                 <Typography variant="body1" sx={{ mb: 4 }}>
                     Doktor paneline hoş geldiniz. Buradan muayenelerinizi ve reçetelerinizi yönetebilirsiniz.
                 </Typography>
@@ -39,6 +40,15 @@ const DoktorDashboard = () => {
                         onClick={() => navigate("/doktor/recete-ekle/1")}
                     >
                         💊 Reçete Yaz (örnek)
+                    </Button>
+
+                    {/* 🔹 Yeni buton - hasta seçimi sayfasına yönlendiriyor */}
+                    <Button
+                        variant="outlined"
+                        color="info"
+                        onClick={() => navigate("/doktor/hasta-receteleri")}
+                    >
+                        📋 Hastaların Reçetelerini Gör
                     </Button>
 
                     <Button

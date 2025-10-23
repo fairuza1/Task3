@@ -24,6 +24,7 @@ import MuayeneEkle from "./components/doktor/MuayeneEkle.jsx";
 import ReceteEkle from "./components/doktor/ReceteEkle.jsx";
 import MuayeneDetay from "./components/doktor/MuayeneDetay.jsx";
 import DoktorDashboard from "./components/doktor/DoktorDashboard.jsx";
+import HastaReceteListesi from "./components/doktor/HastaReceteListesi.jsx";
 
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,7 +51,8 @@ function App() {
                 <Route path="/doktor/recete-ekle/:id" element={<ReceteEkle />} />
                 <Route path="/doktor/muayene-detay/:id" element={<MuayeneDetay />} />
                 <Route path="/doktor" element={<DoktorDashboard />} />
-
+                <Route path="/doktor/hasta/:hastaId/receteler" element={<HastaReceteListesi />}
+                />
             </Routes>
         </Router>
     );

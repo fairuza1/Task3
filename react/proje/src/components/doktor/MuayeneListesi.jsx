@@ -37,40 +37,23 @@ const MuayeneListesi = () => {
             }
 
             const url = `http://localhost:8080/api/muayeneler/doktor/${kullaniciId}`;
-            console.log("📡 İstek atılıyor:", url);
-
             const res = await axios.get(url, {
                 headers: { Authorization: `Bearer ${token}` },
                 withCredentials: true,
             });
 
-            console.log("🔍 Backend yanıtı:", res.data);
-
-            if (!Array.isArray(res.data)) {
-                console.warn("⚠️ Beklenmeyen JSON formatı:", res.data);
-                if (res.data?.message) {
-                    setError(res.data.message);
-                } else if (typeof res.data === "string") {
-                    setError(res.data);
-                } else {
-                    setError("Beklenmeyen veri formatı alındı.");
-                }
+            if (Array.isArray(res.data)) {
+                setMuayeneler(res.data);
+            } else {
+                setError("Beklenmeyen veri formatı alındı.");
                 setMuayeneler([]);
-                return;
             }
-
-            setMuayeneler(res.data);
         } catch (err) {
             console.error("❌ Muayeneler alınamadı:", err);
-            if (err.response) {
-                console.error("Sunucu yanıtı:", err.response.status, err.response.data);
-                if (err.response.status === 403) {
-                    setError("Bu kullanıcıya ait doktor kaydı bulunamadı veya yetkiniz yok.");
-                } else {
-                    setError("Sunucu hatası: " + JSON.stringify(err.response.data));
-                }
+            if (err.response?.status === 403) {
+                setError("Bu kullanıcıya ait doktor kaydı bulunamadı veya yetkiniz yok.");
             } else {
-                setError("Sunucuya ulaşılamıyor.");
+                setError("Sunucu hatası oluştu.");
             }
             setMuayeneler([]);
         } finally {
@@ -154,6 +137,23 @@ const MuayeneListesi = () => {
                                     >
                                         🔍 Görüntüle
                                     </Button>
+
+                                    {/* 💊 Yeni buton: Hastanın reçetelerini gör */}
+                                    <Button
+                                        variant="outlined"
+                                        color="success"
+                                        sx={{ mr: 1 }}
+                                        onClick={() => {
+                                            if (m.hasta?.id) {
+                                                navigate(`/doktor/hasta/${m.hasta.id}/receteler`);
+                                            } else {
+                                                alert("Bu muayeneye ait hasta bilgisi bulunamadı.");
+                                            }
+                                        }}
+                                    >
+                                        💊 Reçeteleri Gör
+                                    </Button>
+
                                     <Button
                                         variant="outlined"
                                         color="error"
