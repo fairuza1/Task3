@@ -18,35 +18,35 @@ public class HastaController {
     private HastaService hastaService;
 
     // 📋 Tüm hastaları listele (sekreter ve doktor)
-    @PreAuthorize("hasAnyRole('SEKRETER','DOKTOR')")
+    @PreAuthorize("hasAnyRole('SEKRETER','DOKTOR','ADMIN')")
     @GetMapping
     public List<Hasta> getAllHastalar() {
         return hastaService.getAllHastalar();
     }
 
     // 🔍 ID ile hasta getir
-    @PreAuthorize("hasAnyRole('SEKRETER','DOKTOR')")
+    @PreAuthorize("hasAnyRole('SEKRETER','DOKTOR','ADMIN')")
     @GetMapping("/{id}")
     public Hasta getHastaById(@PathVariable Long id) {
         return hastaService.getHastaById(id);
     }
 
     // ➕ Yeni hasta oluştur (sadece SEKRETER)
-    @PreAuthorize("hasRole('SEKRETER')")
+    @PreAuthorize("hasAnyRole('SEKRETER','ADMIN')")
     @PostMapping
     public ResponseEntity<Hasta> createHasta(@RequestBody Hasta hasta) {
         return ResponseEntity.ok(hastaService.createHasta(hasta));
     }
 
     // ✏️ Hasta güncelle (sadece SEKRETER)
-    @PreAuthorize("hasRole('SEKRETER')")
+    @PreAuthorize("hasAnyRole('SEKRETER','ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Hasta> updateHasta(@PathVariable Long id, @RequestBody Hasta hasta) {
         return ResponseEntity.ok(hastaService.updateHasta(id, hasta));
     }
 
     // 🗑️ Hasta sil (sadece SEKRETER)
-    @PreAuthorize("hasRole('SEKRETER')")
+    @PreAuthorize("hasAnyRole('SEKRETER','ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteHasta(@PathVariable Long id) {
         hastaService.deleteHasta(id);
@@ -54,7 +54,7 @@ public class HastaController {
     }
 
     // 👩‍⚕️ Hasta – Doktor eşleştir
-    @PreAuthorize("hasRole('SEKRETER')")
+    @PreAuthorize("hasAnyRole('SEKRETER','ADMIN')")
     @PutMapping("/{hastaId}/doktor/{doktorId}")
     public ResponseEntity<Hasta> assignDoctor(@PathVariable Long hastaId, @PathVariable Long doktorId) {
         return ResponseEntity.ok(hastaService.assignDoctor(hastaId, doktorId));

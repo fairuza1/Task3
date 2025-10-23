@@ -56,7 +56,7 @@ public class SecurityConfig {
 
                         // 🩺 Hasta işlemleri
                         .requestMatchers("/api/hastalar/**")
-                        .hasAnyRole("SEKRETER", "DOKTOR")
+                        .hasAnyRole("SEKRETER", "DOKTOR","ADMIN","BAS_DOKTOR")
 
                         // 💊 Reçete işlemleri
                         .requestMatchers("/api/receteler/**")

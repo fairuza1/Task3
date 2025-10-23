@@ -92,7 +92,8 @@ public class HastaService {
     // 🔐 Sadece SEKRETER mi?
     private void checkSekreterYetkisi() {
         boolean isSekreter = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
-                .contains(new SimpleGrantedAuthority("ROLE_SEKRETER"));
+                .stream().anyMatch(a->a.getAuthority().equals("ROLE_SECRETER")||
+                        a.getAuthority().equals("ROLE_ADMIN")); ;
         if (!isSekreter) {
             throw new RuntimeException("Bu işlemi sadece SEKRETER yapabilir!");
         }
@@ -102,7 +103,9 @@ public class HastaService {
     private void checkSekreterOrDoktorYetkisi() {
         boolean yetkili = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                 .stream()
-                .anyMatch(a -> a.getAuthority().equals("ROLE_SEKRETER") || a.getAuthority().equals("ROLE_DOKTOR"));
+                .anyMatch(a -> a.getAuthority().equals("ROLE_SEKRETER") ||
+                        a.getAuthority().equals("ROLE_DOKTOR") ||
+                        a.getAuthority().equals("ROLE_ADMIN"));
         if (!yetkili) {
             throw new RuntimeException("Bu işlemi sadece SEKRETER veya DOKTOR yapabilir!");
         }
