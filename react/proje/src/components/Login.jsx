@@ -3,7 +3,7 @@ import axios from 'axios';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
 import { TextField, Button, Container, Typography, Box, Alert, Link } from '@mui/material';
 
-function Login() {
+function Login({ setIsLoggedIn }) { // ✅ prop olarak alıyoruz
     const [user, setUser] = useState('');
     const [sifre, setSifre] = useState('');
     const [error, setError] = useState('');
@@ -14,13 +14,9 @@ function Login() {
         setError('');
 
         try {
-            // 🔐 Giriş isteği
             const response = await axios.post(
                 'http://localhost:8080/api/auth/login',
-                {
-                    kullaniciAdi: user,
-                    sifre: sifre,
-                },
+                { kullaniciAdi: user, sifre: sifre },
                 { withCredentials: true }
             );
 
@@ -36,15 +32,19 @@ function Login() {
                 });
 
                 const role = meResponse.data.rol;
+                localStorage.setItem('rol', role); // ✅ rolü de sakla
                 console.log("✅ Giriş yapan rol:", role);
+
+                // 🔥 Burada App.jsx’e haber veriyoruz
+                setIsLoggedIn(true);
 
                 // 🔀 Role göre yönlendirme
                 if (role === 'ADMIN') {
                     navigate('/admin');
                 } else if (role === 'BAS_DOKTOR') {
-                    navigate('/doktor'); // 📍 Baş doktor paneli sayfanı buraya tanımlayacağız
+                    navigate('/doktor');
                 } else if (role === 'DOKTOR') {
-                    navigate('/doktor'); // 📍 Doktor için özel sayfa
+                    navigate('/doktor');
                 } else if (role === 'SEKRETER') {
                     navigate('/sekreter');
                 } else {

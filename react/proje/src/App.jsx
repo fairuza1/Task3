@@ -1,10 +1,9 @@
-// src/App.jsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import axios from "axios";
-axios.defaults.withCredentials = true; // 🍪 Cookie gönderimini aç
+import Header from "./components/Header";
+axios.defaults.withCredentials = true;
 
-// components altındaki dosyalara göre import et
 import Login from "./components/Login.jsx";
 import Signup from "./components/Signup.jsx";
 import Home from "./components/Home.jsx";
@@ -29,8 +28,18 @@ import HastaReceteListesi from "./components/doktor/HastaReceteListesi.jsx";
 function App() {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
 
+    // ✅ Sayfa yenilendiğinde token varsa giriş yapılmış say
+    useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (token) {
+            setIsLoggedIn(true);
+        }
+    }, []);
+
     return (
         <Router>
+            {isLoggedIn && <Header setIsLoggedIn={setIsLoggedIn} />}
+
             <Routes>
                 <Route path="/" element={<Login setIsLoggedIn={setIsLoggedIn} />} />
                 <Route path="/signup" element={<Signup />} />
@@ -51,8 +60,7 @@ function App() {
                 <Route path="/doktor/recete-ekle/:id" element={<ReceteEkle />} />
                 <Route path="/doktor/muayene-detay/:id" element={<MuayeneDetay />} />
                 <Route path="/doktor" element={<DoktorDashboard />} />
-                <Route path="/doktor/hasta/:hastaId/receteler" element={<HastaReceteListesi />}
-                />
+                <Route path="/doktor/hasta/:hastaId/receteler" element={<HastaReceteListesi />}/>
             </Routes>
         </Router>
     );
