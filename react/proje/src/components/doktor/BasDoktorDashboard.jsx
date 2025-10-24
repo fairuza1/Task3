@@ -2,36 +2,45 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { Container, Typography, Button, Box, Paper } from "@mui/material";
 
-const DoktorDashboard = () => {
+const BasDoktorDashboard = () => {
     const navigate = useNavigate();
-    const doktorAdi = localStorage.getItem("kullaniciAdi") || "Doktor";
+    const kullaniciAdi = localStorage.getItem("kullaniciAdi") || "Baş Doktor";
 
     return (
         <Container maxWidth="md" sx={{ mt: 8 }}>
             <Paper elevation={3} sx={{ p: 4, borderRadius: 3, textAlign: "center" }}>
                 <Typography variant="h4" gutterBottom>
-                    👨‍⚕️ Hoş geldiniz, {doktorAdi}
+                    🧑‍⚕️ Hoş geldiniz, {kullaniciAdi}
                 </Typography>
 
                 <Typography variant="body1" sx={{ mb: 4 }}>
-                    Doktor paneline hoş geldiniz. Buradan muayenelerinizi ve reçetelerinizi yönetebilirsiniz.
+                    Baş Doktor paneline hoş geldiniz. Buradan doktorları yönetebilir,
+                    muayeneleri inceleyebilir ve sistem genel durumunu görebilirsiniz.
                 </Typography>
 
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => navigate("/doktor/muayeneler")}
+                        onClick={() => navigate("/doktorlar")}
                     >
-                        🩺 Muayenelerim
+                        👨‍⚕️ Doktorları Görüntüle
                     </Button>
 
                     <Button
                         variant="contained"
                         color="secondary"
-                        onClick={() => navigate("/doktor/muayene-ekle")}
+                        onClick={() => navigate("/doktorlar/ekle")}
                     >
-                        ➕ Yeni Muayene Ekle
+                        ➕ Yeni Doktor Ekle
+                    </Button>
+
+                    <Button
+                        variant="contained"
+                        color="success"
+                        onClick={() => navigate("/doktor/muayeneler")}
+                    >
+                        🩺 Tüm Muayeneleri Gör
                     </Button>
 
                     <Button
@@ -50,4 +59,4 @@ const DoktorDashboard = () => {
     );
 };
 
-export default DoktorDashboard;
+export default BasDoktorDashboard;

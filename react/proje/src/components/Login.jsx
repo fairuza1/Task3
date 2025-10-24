@@ -42,7 +42,7 @@ function Login({ setIsLoggedIn }) { // ✅ prop olarak alıyoruz
                 if (role === 'ADMIN') {
                     navigate('/admin');
                 } else if (role === 'BAS_DOKTOR') {
-                    navigate('/doktor');
+                    navigate('/bas-doktor');
                 } else if (role === 'DOKTOR') {
                     navigate('/doktor');
                 } else if (role === 'SEKRETER') {
