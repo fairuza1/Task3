@@ -16,27 +16,27 @@ public class SekreterService {
     @Autowired
     private SekreterRepository sekreterRepository;
 
-    // 📋 Tüm sekreterleri listele
+    // Tüm sekreterleri listele
     public List<Sekreter> getAllSekreterler() {
         checkAdminYetkisi();
         return sekreterRepository.findAll();
     }
 
-    // 🔍 ID ile sekreter getir
+    // ID ile sekreter getir
     public Sekreter getSekreterById(Long id) {
         checkAdminYetkisi();
         return sekreterRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Sekreter bulunamadı"));
     }
 
-    // ➕ Yeni sekreter oluştur
+    //  Yeni sekreter oluştur
     public Sekreter createSekreter(Sekreter sekreter) {
         checkAdminYetkisi();
         sekreter.setOlusturulmaTarihi(LocalDateTime.now());
         return sekreterRepository.save(sekreter);
     }
 
-    // ✏️ Sekreter güncelle
+    // ️ Sekreter güncelle
     public Sekreter updateSekreter(Long id, Sekreter updated) {
         checkAdminYetkisi();
         Sekreter existing = getSekreterById(id);
@@ -47,13 +47,13 @@ public class SekreterService {
         return sekreterRepository.save(existing);
     }
 
-    // 🗑️ Sekreter sil
+    //  Sekreter sil
     public void deleteSekreter(Long id) {
         checkAdminYetkisi();
         sekreterRepository.deleteById(id);
     }
 
-    // 🔐 Sadece ADMIN yetkili mi?
+    //  Sadece ADMIN yetkili
     private void checkAdminYetkisi() {
         boolean isAdmin = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                 .contains(new SimpleGrantedAuthority("ROLE_ADMIN"));

@@ -15,7 +15,7 @@ public class Recete {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🩺 Her reçete bir muayeneye bağlı
+    //  Her reçete bir muayeneye bağlı
     @OneToOne
     @JoinColumn(name = "muayene_id", nullable = false)
     @JsonBackReference

@@ -30,7 +30,7 @@ public class Doktor {
     @Column(nullable = false)
     private String telefon;
 
-    // 🧑‍⚕️ Kullanıcı ile birebir ilişki
+    //  Kullanıcı ile birebir ilişki
     @OneToOne
     @JoinColumn(name = "kullanici_id", referencedColumnName = "id")
     private User kullanici;
@@ -38,7 +38,7 @@ public class Doktor {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime olusturulmaTarihi;
 
-    // 📋 Doktorun yaptığı muayeneler (1:N)
+    //  Doktorun yaptığı muayeneler (1:N)
     @JsonIgnore
     @OneToMany(mappedBy = "doktor", cascade = CascadeType.ALL)
     private List<Muayene> muayeneler;

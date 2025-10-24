@@ -8,7 +8,6 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByKullaniciAdi(String kullaniciAdi);
-    Optional<User> findByEmail(String email); // Bu satırı ekleyin
-    // 🔹 Rol adına göre kullanıcıları getir (örnek: DOKTOR)
+    Optional<User> findByEmail(String email);
     List<User> findByRolIgnoreCase(String rol);
 }

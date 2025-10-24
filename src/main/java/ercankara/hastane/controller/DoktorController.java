@@ -24,28 +24,28 @@ public class DoktorController {
         return doktorService.getAllDoktorlar();
     }
 
-    // 🔍 ID ile doktor getir (Admin, Baş Doktor, Doktor)
+    //  ID ile doktor getir
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR','SEKRETER')")
     @GetMapping("/{id}")
     public Doktor getDoktorById(@PathVariable Long id) {
         return doktorService.getDoktorById(id);
     }
 
-    // ➕ Yeni doktor oluştur (Admin ve Baş Doktor)
+    // Yeni doktor oluştur
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @PostMapping
     public ResponseEntity<Doktor> createDoktor(@RequestBody Doktor doktor) {
         return ResponseEntity.ok(doktorService.createDoktor(doktor));
     }
 
-    // ✏️ Doktor güncelle (Admin ve Baş Doktor)
+    //  Doktor güncelle
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @PutMapping("/{id}")
     public ResponseEntity<Doktor> updateDoktor(@PathVariable Long id, @RequestBody Doktor doktor) {
         return ResponseEntity.ok(doktorService.updateDoktor(id, doktor));
     }
 
-    // 🗑️ Doktor sil (Admin ve Baş Doktor)
+    //  Doktor sil
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteDoktor(@PathVariable Long id) {

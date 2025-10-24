@@ -42,13 +42,13 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String jwt = null;
 
-        // 🥇 1️⃣ Authorization header’dan al
+        //  Authorization header’dan al
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwt = authHeader.substring(7);
         }
 
-        // 🥈 2️⃣ Cookie’den al (eğer header yoksa)
+        // Cookie’den al (eğer header yoksa)
         if (jwt == null) {
             Cookie cookie = WebUtils.getCookie(request, "jwt");
             if (cookie != null) {

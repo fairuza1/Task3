@@ -16,12 +16,12 @@ public class Muayene {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 👨‍⚕️ Muayeneyi yapan doktor
+    //  Muayeneyi yapan doktor
     @ManyToOne
     @JoinColumn(name = "doktor_id", nullable = false)
     private Doktor doktor;
 
-    // 🧍‍♂️ Muayene edilen hasta
+    //  Muayene edilen hasta
     @ManyToOne
     @JoinColumn(name = "hasta_id", nullable = false)
     private Hasta hasta;
@@ -31,7 +31,7 @@ public class Muayene {
     @Column(length = 1000)
     private String tani; // Doktorun tanısı
 
-    // 🔗 Reçete (tekil ilişki)
+    //  Reçete (tekil ilişki)
     @OneToOne(mappedBy = "muayene", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Recete recete;

@@ -59,12 +59,12 @@ public class UserService {
         return new LoginResponse(token, user.getId(), user.getKullaniciAdi());
     }
 
-    // ✅ Tüm kullanıcıları getir
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // ✅ Kullanıcı oluştur
+
     public User createUser(User user) {
         if (userRepository.findByKullaniciAdi(user.getKullaniciAdi()).isPresent()) {
             throw new RuntimeException("Username already exists");
@@ -78,7 +78,6 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    // ✅ Kullanıcı güncelle
     public User updateUser(Long id, User updatedUser) {
         User existing = getUserById(id);
         existing.setKullaniciAdi(updatedUser.getKullaniciAdi());
@@ -89,24 +88,24 @@ public class UserService {
         return userRepository.save(existing);
     }
 
-    // ✅ Kullanıcı sil
+
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
 
-    // ✅ Kullanıcı ID ile getir
+    //  Kullanıcı ID ile getir
     public User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // ✅ Kullanıcı adıyla bul
+    //  Kullanıcı adıyla bul
     public User findByKullaniciAdi(String kullaniciAdi) {
         return userRepository.findByKullaniciAdi(kullaniciAdi)
                 .orElseThrow(() -> new RuntimeException("User not found"));
     }
 
-    // ✅ Refresh token
+    // Refresh token
     public String generateRefreshToken(String kullaniciAdi) {
         return jwtUtil.generateRefreshToken(kullaniciAdi);
     }

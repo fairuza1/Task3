@@ -37,7 +37,7 @@ public class MuayeneController {
         return muayeneService.getMuayeneById(id);
     }
 
-    // ➕ Yeni muayene oluştur (sadece Doktor)
+    //  Yeni muayene oluştur
     @PreAuthorize("hasRole('DOKTOR')")
     @PostMapping
     public ResponseEntity<Muayene> createMuayene(@RequestBody Map<String, Object> body) {
@@ -48,7 +48,7 @@ public class MuayeneController {
         return ResponseEntity.ok(muayeneService.createMuayene(kullaniciId, hastaId, tani));
     }
 
-    // ✏️ Muayene güncelle (sadece Doktor veya Admin)
+    //  Muayene güncelle
     @PreAuthorize("hasAnyRole('DOKTOR','ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Muayene> updateMuayene(@PathVariable Long id, @RequestBody Map<String, Object> body) {
@@ -56,7 +56,7 @@ public class MuayeneController {
         return ResponseEntity.ok(muayeneService.updateMuayene(id, tani));
     }
 
-    // 🗑️ Muayene sil (sadece Admin)
+    //  Muayene sil (sadece Admin)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteMuayene(@PathVariable Long id) {
@@ -64,7 +64,7 @@ public class MuayeneController {
         return ResponseEntity.ok("Muayene silindi.");
     }
 
-    // 👨‍⚕️ Belirli bir doktorun muayeneleri (kullanıcı ID’sine göre)
+    // ️ Belirli bir doktorun muayeneleri (kullanıcı ID’sine göre)
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
     @GetMapping("/doktor/{kullaniciId}")
     public List<Muayene> getMuayenelerByDoktor(@PathVariable Long kullaniciId) {
@@ -75,7 +75,7 @@ public class MuayeneController {
         return muayeneService.getMuayenelerByDoktor(doktor.getId());
     }
 
-    // 🧍‍♀️ Belirli bir hastanın muayeneleri
+    // Belirli bir hastanın muayeneleri
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR','SEKRETER')")
     @GetMapping("/hasta/{hastaId}")
     public List<Muayene> getMuayenelerByHasta(@PathVariable Long hastaId) {

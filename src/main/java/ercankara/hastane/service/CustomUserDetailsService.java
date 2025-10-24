@@ -28,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         User user = userOptional.get();
 
-        // ✅ Rolü Spring’in anlayacağı şekilde "ROLE_" ile başlat
+        // Rolü Spring’in anlayacağı şekilde "ROLE_"
         GrantedAuthority authority = new SimpleGrantedAuthority("ROLE_" + user.getRol().toUpperCase());
 
         return new org.springframework.security.core.userdetails.User(

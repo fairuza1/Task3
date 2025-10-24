@@ -21,20 +21,20 @@ public class HastaService {
     @Autowired
     private DoktorRepository doktorRepository;
 
-    // 📋 Tüm hastaları getir (sekreter ve doktor görebilir)
+
     public List<Hasta> getAllHastalar() {
         checkSekreterOrDoktorYetkisi();
         return hastaRepository.findAll();
     }
 
-    // 🔍 ID ile hasta getir
+
     public Hasta getHastaById(Long id) {
         checkSekreterOrDoktorYetkisi();
         return hastaRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Hasta bulunamadı"));
     }
 
-    // ➕ Yeni hasta oluştur (sadece SEKRETER)
+
     public Hasta createHasta(Hasta hasta) {
         checkSekreterYetkisi();
 
@@ -42,7 +42,7 @@ public class HastaService {
             throw new RuntimeException("Bu TC kimlik numarasına sahip bir hasta zaten mevcut!");
         }
 
-        // 📌 Doktor atanmışsa kontrol et ve ekle
+
         if (hasta.getDoktor() != null && hasta.getDoktor().getId() != null) {
             Doktor doktor = doktorRepository.findById(hasta.getDoktor().getId())
                     .orElseThrow(() -> new RuntimeException("Doktor bulunamadı"));
@@ -53,7 +53,7 @@ public class HastaService {
         return hastaRepository.save(hasta);
     }
 
-    // ✏️ Hasta güncelle (sadece SEKRETER)
+
     public Hasta updateHasta(Long id, Hasta updated) {
         checkSekreterYetkisi();
         Hasta hasta = getHastaById(id);
@@ -63,7 +63,7 @@ public class HastaService {
         hasta.setTelefon(updated.getTelefon());
         hasta.setAdres(updated.getAdres());
 
-        // 📌 Doktor eşleştirmesini güncelle
+
         if (updated.getDoktor() != null && updated.getDoktor().getId() != null) {
             Doktor doktor = doktorRepository.findById(updated.getDoktor().getId())
                     .orElseThrow(() -> new RuntimeException("Doktor bulunamadı"));
@@ -73,13 +73,11 @@ public class HastaService {
         return hastaRepository.save(hasta);
     }
 
-    // 🗑️ Hasta sil (sadece SEKRETER)
     public void deleteHasta(Long id) {
         checkSekreterYetkisi();
         hastaRepository.deleteById(id);
     }
 
-    // 📌 Hasta – Doktor eşleştirme
     public Hasta assignDoctor(Long hastaId, Long doktorId) {
         checkSekreterYetkisi();
         Hasta hasta = getHastaById(hastaId);
@@ -89,7 +87,6 @@ public class HastaService {
         return hastaRepository.save(hasta);
     }
 
-    // 🔐 Sadece SEKRETER mi?
     private void checkSekreterYetkisi() {
         boolean yetkili = SecurityContextHolder.getContext().getAuthentication().getAuthorities()
                 .stream()

@@ -17,35 +17,35 @@ public class SekreterController {
     @Autowired
     private SekreterService sekreterService;
 
-    // 📋 Tüm sekreterleri listele
+    // Tüm sekreterleri listele
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<Sekreter> getAllSekreterler() {
         return sekreterService.getAllSekreterler();
     }
 
-    // 🔍 ID ile sekreter getir
+    // ID ile sekreter getir
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public Sekreter getSekreterById(@PathVariable Long id) {
         return sekreterService.getSekreterById(id);
     }
 
-    // ➕ Yeni sekreter oluştur
+    //Yeni sekreter oluştur
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<Sekreter> createSekreter(@RequestBody Sekreter sekreter) {
         return ResponseEntity.ok(sekreterService.createSekreter(sekreter));
     }
 
-    // ✏️ Sekreter güncelle
+    // Sekreter güncelle
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Sekreter> updateSekreter(@PathVariable Long id, @RequestBody Sekreter sekreter) {
         return ResponseEntity.ok(sekreterService.updateSekreter(id, sekreter));
     }
 
-    // 🗑️ Sekreter sil
+    //  Sekreter sil
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteSekreter(@PathVariable Long id) {

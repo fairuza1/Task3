@@ -59,13 +59,11 @@ public class ReceteService {
         return receteRepository.save(recete);
     }
 
-    // 🗑️ Reçete sil (sadece Admin)
+
     public void deleteRecete(Long id) {
         checkAdminYetkisi();
         receteRepository.deleteById(id);
     }
-
-    // 🔐 Yetki kontrolleri
     private void checkYetkili() {
         boolean yetkili = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(a ->

@@ -25,28 +25,27 @@ public class UserController {
     @Autowired
     private DoktorRepository doktorRepository;
 
-    // ✅ Sadece ADMIN tüm kullanıcıları görebilir
+    //  Sadece ADMIN tüm kullanıcıları görebilir
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
     public List<User> getAllUsers() {
         return userService.getAllUsers();
     }
-
-    // ✅ Sadece ADMIN kullanıcı oluşturabilir
+    //  Sadece ADMIN kullanıcı oluşturabilir
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping
     public ResponseEntity<User> createUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.createUser(user));
     }
 
-    // ✅ Sadece ADMIN kullanıcı güncelleyebilir
+    //  Sadece ADMIN kullanıcı güncelleyebilir
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
         return ResponseEntity.ok(userService.updateUser(id, updatedUser));
     }
 
-    // ✅ Sadece ADMIN kullanıcı silebilir
+    // Sadece ADMIN kullanıcı silebilir
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteUser(@PathVariable Long id) {
@@ -54,14 +53,14 @@ public class UserController {
         return ResponseEntity.ok("Kullanıcı silindi");
     }
 
-    // ✅ Sadece ADMIN kullanıcıyı ID ile görebilir
+    //  Sadece ADMIN kullanıcıyı ID ile görebilir
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
     }
 
-    // 🆕 🔹 Rol bazlı kullanıcıları getir (örn: DOKTOR)
+    //  Rol bazlı kullanıcıları getir (örn: DOKTOR)
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR')")
     @GetMapping("/role/{rol}")
     public List<User> getUsersByRole(@PathVariable String rol) {

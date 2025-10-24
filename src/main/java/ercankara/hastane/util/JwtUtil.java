@@ -12,34 +12,34 @@ import java.util.*;
 @Component
 public class JwtUtil {
 
-    // ✅ Sabit ve güvenli SECRET_KEY (32+ byte olmalı)
+    // Sabit ve güvenli SECRET_KEY (32+ byte olmalı)
     private static final String SECRET = "bu-cok-uzun-ve-sabit-bir-secret-key-32-byte-uzunlugunda-olmali!!!";
     private final SecretKey SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes());
 
-    // 🔐 Kullanıcı adını token'dan çıkar
+    // Kullanıcı adını token'dan çıkar
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    // 🔐 Rol bilgisini token'dan çıkar
-    // Not: Artık liste şeklinde dönüyoruz çünkü Spring roles listesi bekler
+    //  Rol bilgisini token'dan çıkar
+
     public List<String> extractRoles(String token) {
         final Claims claims = extractAllClaims(token);
         return claims.get("roles", List.class);
     }
 
-    // ⏰ Token'ın son geçerlilik tarihini al
+    // Token'ın son geçerlilik tarihini al
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
 
-    // 📦 Herhangi bir claim'i çıkar
+    //  Herhangi bir claim'i çıkar
     public <T> T extractClaim(String token, java.util.function.Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    // 📜 Token içindeki tüm claim'leri çözümle
+    //Token içindeki tüm claim'leri çözümle
     private Claims extractAllClaims(String token) {
         try {
             return Jwts.parserBuilder()
@@ -52,12 +52,12 @@ public class JwtUtil {
         }
     }
 
-    // 📆 Token süresi dolmuş mu?
+    //  Token süresi dolmuş mu?
     public Boolean isTokenExpired(String token) {
         return extractExpiration(token).before(new Date());
     }
 
-    // 🔁 Refresh token oluştur (30 gün geçerli)
+    //  Refresh token oluştur (30 gün geçerli)
     public String generateRefreshToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
@@ -67,7 +67,7 @@ public class JwtUtil {
                 .compact();
     }
 
-    // 🪪 Access token oluştur (rol bilgisiyle birlikte)
+    //  Access token oluştur (rol bilgisiyle birlikte)
     public String generateToken(String kullaniciAdi, String role) {
         Map<String, Object> claims = new HashMap<>();
         // ✅ Burada rolü ROLE_ ile başlatarak liste şeklinde ekliyoruz
@@ -75,7 +75,7 @@ public class JwtUtil {
         return createToken(claims, kullaniciAdi);
     }
 
-    // 🧪 Token oluşturma işlemi
+    // Token oluşturma işlemi
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
                 .setClaims(claims)

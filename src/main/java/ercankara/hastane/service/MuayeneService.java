@@ -26,24 +26,21 @@ public class MuayeneService {
     @Autowired
     private HastaRepository hastaRepository;
 
-    // 📋 Tüm muayeneleri listele (Admin, Baş Doktor, Doktor, Sekreter)
+
     public List<Muayene> getAllMuayeneler() {
         checkYetkili();
         return muayeneRepository.findAll();
     }
 
-    // 🔍 ID ile muayene getir
     public Muayene getMuayeneById(Long id) {
         checkYetkili();
         return muayeneRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Muayene bulunamadı!"));
     }
 
-    // ➕ Yeni muayene oluştur (sadece Doktor)
     public Muayene createMuayene(Long kullaniciId, Long hastaId, String tani) {
         checkDoktorYetkisi();
 
-        // 👇 Artık doktoru kullanıcı ID'sinden buluyoruz
         Doktor doktor = doktorRepository.findByKullaniciId(kullaniciId)
                 .orElseThrow(() -> new RuntimeException("Doktor bulunamadı!"));
 
@@ -60,7 +57,7 @@ public class MuayeneService {
         return muayeneRepository.save(muayene);
     }
 
-    // ✏️ Muayene güncelle (sadece Doktor veya Admin)
+
     public Muayene updateMuayene(Long id, String tani) {
         checkDoktorOrAdmin();
         Muayene muayene = getMuayeneById(id);
@@ -68,25 +65,24 @@ public class MuayeneService {
         return muayeneRepository.save(muayene);
     }
 
-    // 🗑️ Muayene sil (sadece Admin)
+
     public void deleteMuayene(Long id) {
         checkAdminYetkisi();
         muayeneRepository.deleteById(id);
     }
 
-    // 👨‍⚕️ Doktora göre filtreleme
+
     public List<Muayene> getMuayenelerByDoktor(Long doktorId) {
         checkYetkili();
         return muayeneRepository.findByDoktorId(doktorId);
     }
 
-    // 🧍 Hastaya göre filtreleme
+
     public List<Muayene> getMuayenelerByHasta(Long hastaId) {
         checkYetkili();
         return muayeneRepository.findByHastaId(hastaId);
     }
 
-    // 🔐 Yetki kontrolleri
     private void checkYetkili() {
         boolean yetkili = SecurityContextHolder.getContext().getAuthentication().getAuthorities().stream()
                 .anyMatch(a ->

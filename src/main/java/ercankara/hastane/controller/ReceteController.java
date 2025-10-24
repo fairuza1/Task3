@@ -18,21 +18,21 @@ public class ReceteController {
     @Autowired
     private ReceteService receteService;
 
-    // 📋 Tüm reçeteleri listele (Admin, Doktor, Baş Doktor)
+    //  Tüm reçeteleri listele (Admin, Doktor, Baş Doktor)
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
     @GetMapping
     public List<Recete> getAllReceteler() {
         return receteService.getAllReceteler();
     }
 
-    // 🔍 ID ile reçete getir
+    //  ID ile reçete getir
     @PreAuthorize("hasAnyRole('ADMIN','BAS_DOKTOR','DOKTOR')")
     @GetMapping("/{id}")
     public Recete getReceteById(@PathVariable Long id) {
         return receteService.getReceteById(id);
     }
 
-    // ➕ Yeni reçete oluştur (sadece Doktor)
+    //  Yeni reçete oluştur (sadece Doktor)
     @PreAuthorize("hasRole('DOKTOR')")
     @PostMapping
     public ResponseEntity<Recete> createRecete(@RequestBody Map<String, Object> body) {
@@ -45,7 +45,7 @@ public class ReceteController {
         return ResponseEntity.ok(recete);
     }
 
-    // ✏️ Reçete güncelle (sadece Doktor veya Admin)
+    //  Reçete güncelle (sadece Doktor veya Admin)
     @PreAuthorize("hasAnyRole('DOKTOR','ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<Recete> updateRecete(@PathVariable Long id, @RequestBody Map<String, Object> body) {
@@ -57,7 +57,7 @@ public class ReceteController {
         return ResponseEntity.ok(updated);
     }
 
-    // 🗑️ Reçete sil (sadece Admin)
+    //  Reçete sil (sadece Admin)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteRecete(@PathVariable Long id) {
